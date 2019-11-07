@@ -5,6 +5,10 @@ verify_ssl = true
 
 [dev-packages]
 yapf = "*"
+rope = "*"
+pylint = "*"
+rospy = "*"
+stdmsg = "*"
 
 [packages]
 

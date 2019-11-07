@@ -1,3 +1,10 @@
+adafruit-motorhat-pip:
+  debian:
+    pip:
+      packages: [Adafruit-MotorHAT]
+  ubuntu:
+    pip:
+      packages: [Adafruit-MotorHAT]
 adafruit-ssd1306-pip:
   debian:
     pip:
@@ -12,6 +19,13 @@ sparkfun-qwiic-scmd-pip:
   ubuntu:
     pip:
       packages: [sparkfun-qwiic-scmd]
+smbus:
+  debian:
+    pip:
+      packages: [smbus]
+  ubuntu:
+    pip:
+      packages: [smbus]
 aws-iot-sdk-python:
    debian:
      pip:

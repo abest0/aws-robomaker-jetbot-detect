@@ -14,6 +14,8 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>aws-iot-sdk-python</depend>
-  <depend>sparkfun-qwiic-scmd-pip</depend>
+  <depend>adafruit-motorhat-pip</depend>
   <depend>adafruit-ssd1306-pip</depend>
+  <depend>sparkfun-qwiic-scmd-pip</depend>
+  <depend>smbus</depend>
 </package>
