@@ -1,4 +1,4 @@
-FROM 593875212637.dkr.ecr.us-west-2.amazonaws.com/jetbot-ros:latest
+FROM 593875212637.dkr.ecr.us-east-1.amazonaws.com/jetbot-ros:latest
 
 COPY deps/ /etc/ros/rosdep/sources.list.d/
 
