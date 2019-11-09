@@ -11,7 +11,7 @@ import base64
 import json
 import random
 import logging
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+# from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
