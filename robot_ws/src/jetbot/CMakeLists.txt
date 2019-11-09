@@ -57,7 +57,7 @@ include_directories(/usr/include/gstreamer-1.0 /usr/include/glib-2.0 /usr/includ
 ################################################################################
 catkin_install_python(PROGRAMS 
   nodes/circle
-  nodes/dino_detect
+  nodes/detect
   nodes/display
   nodes/move
   nodes/camera
