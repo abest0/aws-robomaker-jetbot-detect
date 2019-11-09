@@ -1,99 +1,81 @@
 #!/usr/bin/env python2
 
-import rospy
+import os
 import time
 import json
-
-from Adafruit_MotorHAT import Adafruit_MotorHAT
+import logging
+import rospy
 from std_msgs.msg import String
 
+import qwiic_scmd
 
-def set_speed(motor_ID, value):
-	max_pwm = 115.0
-	speed = int(min(max(abs(value * max_pwm), 0), max_pwm))
-
-	if motor_ID == 1:
-		motor = motor_left
-	elif motor_ID == 2:
-		motor = motor_right
-	else:
-		rospy.logerror('set_speed(%d, %f) -> invalid motor_ID=%d', motor_ID, value, motor_ID)
-		return
-	
-	motor.setSpeed(speed)
-
-	if value > 0:
-		motor.run(Adafruit_MotorHAT.FORWARD)
-	else:
-		motor.run(Adafruit_MotorHAT.BACKWARD)
+LEFT_MOTOR = 0
+RIGHT_MOTOR = 1
+MAX_PWM = 255
+CONTROLLER = os.environ['MOTOR_CONTROLLER'].lower()
 
 
-# stops all motors
-def all_stop():
-	motor_left.setSpeed(0)
-	motor_right.setSpeed(0)
+class Move:
+    def __init__(self):
+        rospy.init_node('move')
 
-	motor_left.run(Adafruit_MotorHAT.RELEASE)
-	motor_right.run(Adafruit_MotorHAT.RELEASE)
+        self.setup_motor_controller()
+        self.setup_subscriptions()
+        self.last_known_command_time = rospy.Time.now()
 
+    def setup_motor_controller(self):
+        rospy.loginfo("Starting with controller %s", CONTROLLER)
+        self.motor_driver = qwiic_scmd.QwiicScmd()
+        self.motor_driver.disable()
 
-# directional commands (degree, speed)
-def on_cmd_dir(msg):
-	rospy.loginfo(rospy.get_caller_id() + ' cmd_dir=%s', msg.data)
+    def setup_subscriptions(self):
+        # setup ros node
+        rospy.Subscriber('~cmd_dir', String, self.on_cmd_dir)
+        rospy.Subscriber('~cmd_raw', String, self.on_cmd_raw)
+        rospy.Subscriber('~cmd_str', String, self.on_cmd_str)
 
-# raw L/R motor commands (speed, speed)
-def on_cmd_raw(msg):
-	rospy.loginfo(rospy.get_caller_id() + ' cmd_raw=%s', msg.data)
+    # stops all motors
+    def all_stop(self):
+        self.motor_driver.disable()
+
+    def set_speed(self, motor, throttle_pct=0):
+        speed = int(throttle_pct * MAX_PWM)
+
+        direction = 0 if throttle_pct > 0 else 1
+
+        self.motor_driver.set_drive(motor, direction, speed)
+
+    # raw L/R motor commands (speed, speed)
+    def on_cmd_raw(self, msg):
+        rospy.loginfo(rospy.get_caller_id() + ' cmd_raw=%s', msg.data)
         move_data_recv = json.loads(msg.data)
-        set_speed(motor_left_ID, float(move_data_recv['left']))
-        set_speed(motor_right_ID, float(move_data_recv['right']))
 
-# simple string commands (left/right/forward/backward/stop)
-def on_cmd_str(msg):
-	rospy.loginfo(rospy.get_caller_id() + ' cmd_str=%s', msg.data)
+        self.set_speed(LEFT_MOTOR, float(move_data_recv['left']))
+        self.set_speed(RIGHT_MOTOR, float(move_data_recv['right']))
+        self.motor_driver.enable()
 
-	if msg.data.lower() == "left":
-		set_speed(motor_left_ID,  -1.0)
-		set_speed(motor_right_ID,  1.0) 
-	elif msg.data.lower() == "right":
-		set_speed(motor_left_ID,   1.0)
-		set_speed(motor_right_ID, -1.0) 
-	elif msg.data.lower() == "forward":
-		set_speed(motor_left_ID,   1.0)
-		set_speed(motor_right_ID,  1.0)
-	elif msg.data.lower() == "backward":
-		set_speed(motor_left_ID,  -1.0)
-		set_speed(motor_right_ID, -1.0)  
-	elif msg.data.lower() == "stop":
-		all_stop()
-	else:
-		rospy.logerror(rospy.get_caller_id() + ' invalid cmd_str=%s', msg.data)
+    # directional commands (degree, speed)
+    def on_cmd_dir(self, msg):
+        rospy.loginfo(rospy.get_caller_id() + ' cmd_dir=%s', msg.data)
+
+        # add code to move with vectors
+
+    # simple string commands (left/right/forward/backward/stop)
+    def on_cmd_str(self, msg):
+        rospy.loginfo(rospy.get_caller_id() + ' cmd_str=%s', msg.data)
+        # Add code to move in directions: left, right, forward, backwards
+
+    def main(self):
+        self.all_stop()
+        rospy.spin()
+        self.all_stop()
 
 
 # initialization
 if __name__ == '__main__':
-
-	# setup motor controller
-	motor_driver = Adafruit_MotorHAT(i2c_bus=0)
-
-	motor_left_ID = 1
-	motor_right_ID = 2
-
-	motor_left = motor_driver.getMotor(motor_left_ID)
-	motor_right = motor_driver.getMotor(motor_right_ID)
-
-	# stop the motors as precaution
-	all_stop()
-
-	# setup ros node
-	rospy.init_node('move')
-	
-	rospy.Subscriber('~cmd_dir', String, on_cmd_dir)
-	rospy.Subscriber('~cmd_raw', String, on_cmd_raw)
-	rospy.Subscriber('~cmd_str', String, on_cmd_str)
-
-	# start running
-	rospy.spin()
-
-	# stop motors before exiting
-	all_stop()
+    try:
+        move = Move()
+        move.main()
+    except Exception as e:
+        logging.exception("An error occurred")
+        raise e
