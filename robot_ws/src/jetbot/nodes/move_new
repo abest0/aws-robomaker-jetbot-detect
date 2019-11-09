@@ -2,6 +2,7 @@
 
 import rospy
 import json
+import logging
 
 from Adafruit_MotorHAT import Adafruit_MotorHAT
 from std_msgs.msg import String
@@ -119,6 +120,10 @@ class MoveRobot:
 # initialization
 if __name__ == '__main__':
     rospy.init_node('move')
-    move_dinobot = MoveRobot()
-    move_dinobot.main()
+    try:
+        move = MoveRobot()
+        move.main()
+    except Exception as e:
+        logging.exception("An error occurred in main")
+        raise e
 

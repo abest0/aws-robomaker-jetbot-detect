@@ -1,7 +1,7 @@
 #!/bin/bash
 
 BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"  )" >/dev/null 2>&1 && pwd  )"
-CERTS_FOLDER=$BASE_DIR/../robot_ws/src/dinobot/certs
+CERTS_FOLDER=$BASE_DIR/../robot_ws/src/jetbot/certs
 
 [ ! -d "$CERTS_FOLDER" ] && mkdir -p $CERTS_FOLDER
 

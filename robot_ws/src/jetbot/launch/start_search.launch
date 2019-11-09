@@ -1,0 +1,5 @@
+<launch>
+  <node name="camera" pkg="jetbot-detect" type="camera" />
+  <node name="move" pkg="jetbot-detect" type="move" />
+  <node name="dino_detect" pkg="jetbot-detect" type="dino_detect" />
+</launch>

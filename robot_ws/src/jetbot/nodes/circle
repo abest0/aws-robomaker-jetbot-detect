@@ -3,6 +3,7 @@
 import rospy
 import json
 import os
+import logging
 from std_msgs.msg import String
 
 CONTROLLER = os.environ['MOTOR_CONTROLLER'].lower()
@@ -55,7 +56,10 @@ class CircleRobot:
 
 # initialization
 if __name__ == '__main__':
-    rospy.init_node('circle')
-    jetbot = CircleRobot()
-    jetbot.main()
+    try:
+        rospy.init_node('circle')
+        jetbot = CircleRobot()
+        jetbot.main()
+    except Exception as e:
+        logging.exception("An error occurred")
 

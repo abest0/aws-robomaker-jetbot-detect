@@ -1,5 +1,0 @@
-<launch>
-  <node name="camera" pkg="dinobot" type="camera" />
-  <node name="move" pkg="dinobot" type="move" />
-  <node name="dino_detect" pkg="dinobot" type="dino_detect" />
-</launch>

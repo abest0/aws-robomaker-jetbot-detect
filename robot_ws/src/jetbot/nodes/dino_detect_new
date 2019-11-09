@@ -51,9 +51,9 @@ class DinoDetect:
         self.IOT_TOPIC = "dino-detect"
         self.iotClient = AWSIoTMQTTClient('jetbot')
         self.iotClient.configureEndpoint(IOT_HOST, 8843)
-        self.iotClient.configureCredentials("../../share/dinobot/certs/root.ca.pem",
-                                            "../../share/dinobot/certs/private.pem.key",
-                                            "../../share/dinobot/certs/certificate.pem.crt")
+        self.iotClient.configureCredentials("../../share/jetbot/certs/root.ca.pem",
+                                            "../../share/jetbot/certs/private.pem.key",
+                                            "../../share/jetbot/certs/certificate.pem.crt")
         rospy.loginfo("Connecting to iot core")
         self.iotClient.connect()
 
