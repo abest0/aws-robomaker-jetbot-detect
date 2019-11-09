@@ -116,10 +116,7 @@ def move_bot(image, robot_stop=False):
 
 def callback(data):
     global config, settings, device, iotClient
-    #print ("pre image")
     img = bridge.imgmsg_to_cv2(data, 'bgr8')
-    #print ("post image")
-    #img = data
     robot_stop = False
     # probs, classes = find_obj({'new': img})
     # prev_class = None
