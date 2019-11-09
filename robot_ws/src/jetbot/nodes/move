@@ -30,9 +30,9 @@ class Move:
 
     def setup_subscriptions(self):
         # setup ros node
-        rospy.Subscriber('~cmd_dir', String, on_cmd_dir)
-        rospy.Subscriber('~cmd_raw', String, on_cmd_raw)
-        rospy.Subscriber('~cmd_str', String, on_cmd_str)
+        rospy.Subscriber('~cmd_dir', String, self.on_cmd_dir)
+        rospy.Subscriber('~cmd_raw', String, self.on_cmd_raw)
+        rospy.Subscriber('~cmd_str', String, self.on_cmd_str)
 
     # stops all motors
     def all_stop(self):
@@ -61,7 +61,7 @@ class Move:
         # add code to move with vectors
 
     # simple string commands (left/right/forward/backward/stop)
-    def on_cmd_str(msg):
+    def on_cmd_str(self, msg):
         rospy.loginfo(rospy.get_caller_id() + ' cmd_str=%s', msg.data)
         # Add code to move in directions: left, right, forward, backwards
 
